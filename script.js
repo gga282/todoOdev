@@ -14,7 +14,15 @@ addAllEventListener();
 function addAllEventListener(){
     form.addEventListener('submit',addNewItem);
     todoPendings.addEventListener('click',deleteItem);
+    todoInProgress.addEventListener('click',deleteItem);
+    todoDone.addEventListener('click',deleteItem);
+    btnDeleteAll.addEventListener('click',removeAll);
 
+}
+function removeAll(e){
+    todoInProgress.innerHTML="";
+    todoDone.innerHTML="";
+    todoPendings.innerHTML="";
 }
 function addNewItem(e){
     e.preventDefault();
