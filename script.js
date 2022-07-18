@@ -5,15 +5,12 @@ const deleteAllButton=document.querySelector('#deleteAllButton');
 const inputText=document.querySelector('#inputText');
 const submitTodo=document.querySelector('#submitTodo');
 console.log("hello");
-console.log(inputText.value);
 var i=0;
 let items;
-
+loadItems();
 addAllEventListener();
 
 function addAllEventListener(){
-    console.log("hello2");
-    
 
 todoDone.addEventListener('click',deleteItem);
 todoPendings.addEventListener('click',deleteItem);
@@ -23,10 +20,11 @@ submitTodo.addEventListener('submit',addNewItem);
 
 }
 function removeAll(){
-    console.log('deneme');
-    todoDone.innerHTML=" ";
-    todoProgress.innerHTML=" ";
-    todoPendings.innerHTML=" ";
+    todoDone.innerHTML="";
+    todoProgress.innerHTML="";
+    todoPendings.innerHTML="";
+    localStorage.clear();
+
 }
 function addNewItem(e){
 
@@ -61,10 +59,12 @@ function createItems(text){
 }
 function deleteItem(e){
     e.preventDefault();
-    console.log('deneme');
+    console.log(e.target.className);
+    
     if(e.target.className=="bi bi-x-circle"){
         if(confirm('Are you sure?')){
             e.target.parentElement.parentElement.remove();
+            deleteItemFromLS(e.target.parentElement.parentElement.textContent);
         }
     }
 
@@ -73,8 +73,12 @@ function myDrop(e){
     e.preventDefault();
     //console.log("Birak: ",e.target.id);
     var data=e.dataTransfer.getData("text");
-    console.log(data);
+    console.log(data.textContent);
     e.target.appendChild(document.getElementById(data));
+    setItemsToLS(data.textContent);
+    deleteItemFromLS(data.textContent);
+
+    
 
 }
 function allowDrop(e){
@@ -83,28 +87,28 @@ function allowDrop(e){
 function drag(e){
     console.log("surukle:",e.target.id);
     e.dataTransfer.setData("text",e.target.id);
-    
 }
 function setItemsToLS(text){
+
     items=getItemsFromLS();
     items.push(text);
-    localStorage.setItem("todo-list", JSON.stringify(items));
+    localStorage.setItem("todolist", JSON.stringify(items));
 
 }
 function getItemsFromLS(){
 
-    if(localStorage.getItem("todo-list")=== null){
+    if(localStorage.getItem("todolist")===null){
         items=[];
     }else{
-        items = JSON.parse(localStorage.getItem("todo-list"));
+        items = JSON.parse(localStorage.getItem("todolist"));
     }
     return items;
 }
 function loadItems() {
 
     items = getItemsFromLS();
-    items.forEach(function (item) {
-        createItems(item);
+    items.forEach(function (items) {
+        createItems(items);
     })
 
 }
@@ -115,5 +119,5 @@ function deleteItemFromLS(text) {
             items.splice(index, 1);
         }
     });
-    localStorage.setItem("todo-list", JSON.stringify(items));
+    localStorage.setItem("todolist", JSON.stringify(items));
 }
